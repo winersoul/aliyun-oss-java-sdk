@@ -22,10 +22,10 @@ package com.aliyun.oss.integrationtests;
 public final class TestConfig {
 
     // OSS test configuration
-    public static String OSS_TEST_ENDPOINT = null;
+    public static String OSS_TEST_ENDPOINT = "oss-cn-shanghai.aliyuncs.com";
     public static String OSS_TEST_REGION = null;
-    public static String OSS_TEST_ACCESS_KEY_ID = null;
-    public static String OSS_TEST_ACCESS_KEY_SECRET = null;
+    public static String OSS_TEST_ACCESS_KEY_ID = "kMyf4y8Rv48UOiTC";
+    public static String OSS_TEST_ACCESS_KEY_SECRET = "7nqy4YaL34UUJ7JNCgfpQvV3MXaWF8";
     public static String OSS_TEST_ACCESS_KEY_ID_1 = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET_1 = null;
     

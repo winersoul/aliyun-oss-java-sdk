@@ -21,6 +21,7 @@ package com.aliyun.oss.model;
 
 
 /**
+ * 追加
  * Successful response of append object operation.
  */
 public class AppendObjectResult extends GenericResult {

@@ -64,9 +64,9 @@ public class TestBase {
     protected static final String DEFAULT_ENCODING_TYPE = "url";
     protected static final String APPENDABLE_OBJECT_TYPE = "Appendable";
     protected static final int LIST_PART_MAX_RETURNS = 1000;
-    protected static final String INVALID_ENDPOINT = "http://InvalidEndpoint";
-    protected static final String INVALID_ACCESS_ID = "InvalidAccessId";
-    protected static final String INVALID_ACCESS_KEY = "InvalidAccessKey";
+    protected static final String INVALID_ENDPOINT = "oss-cn-shanghai.aliyuncs.com";
+    protected static final String INVALID_ACCESS_ID = "kMyf4y8Rv48UOiTC";
+    protected static final String INVALID_ACCESS_KEY = "7nqy4YaL34UUJ7JNCgfpQvV3MXaWF8";
     
     protected static final String BUCKET_NAME_PREFIX = "oss-java-sdk-";
     protected static final String USER_DIR = System.getProperty("user.dir");
@@ -211,6 +211,7 @@ public class TestBase {
         return objs;
     }
     
+    //bucket 列表
     protected static List<String> listAllBuckets(OSSClient client, String bucketPrefix) {
         List<String> bkts = new ArrayList<String>();
         String nextMarker = null;
@@ -228,7 +229,7 @@ public class TestBase {
         
         return bkts;
     }
-    
+    //清除全部的bucket,指定bucketPrefix前缀
     protected static void cleanUpAllBuckets(OSSClient client, String bucketPrefix) {
         List<String> bkts = listAllBuckets(client, bucketPrefix);
         for (String b : bkts) {
@@ -237,13 +238,14 @@ public class TestBase {
         }
     }
     
+    //关闭client
     public static void cleanUp() {
         if (ossClient != null) {
             ossClient.shutdown();
             ossClient = null;
         }
     }
-     
+    //比较两文件内容是否一致
     public static boolean compareFile(String fileNameLeft, String fileNameRight) throws IOException {
         FileInputStream fisLeft = null;
         FileInputStream fisRight = null;
@@ -288,7 +290,7 @@ public class TestBase {
             }
         }
     }
-    
+    //创建样本文件，size <= n*context.length
     public static File createSampleFile(String fileName, long size) throws IOException {
         File file = File.createTempFile(fileName, ".txt");
         file.deleteOnExit();

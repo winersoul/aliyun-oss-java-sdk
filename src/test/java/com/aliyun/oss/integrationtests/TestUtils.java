@@ -112,12 +112,12 @@ public class TestUtils {
             throw new RuntimeException(e);
         }
     }
-    
+    //随机字符
     private static byte pickupAlphabet() {
         int idx = new Random().nextInt(ALPHABETS.length);
         return ALPHABETS[idx];
     }
-    
+    //随机字符串
     public static String genRandomString(final int length) {
         byte[] data = new byte[length];
         for (int i = 0; i < data.length; i++) {
@@ -216,20 +216,20 @@ public class TestUtils {
             buf[i] = 'a';
         return new ByteArrayInputStream(buf);
     }
-    
+    //确定目录是否存在，不存在则创建
     public static void ensureDirExist(String dir) {
         File f = new File(dir);
         if (!f.exists())
             f.mkdirs();
     }
-    
+    //批量删除本地文件
     public static void removeFiles(List<File> files) {
         for (File f : files) {
             if (f != null && f.exists())
                 f.delete();
         }
     }
-    
+    //删除单个文件
     public static void removeFile(String filePath) {
         File toRemove = new File(filePath);
         if (toRemove != null && toRemove.exists())

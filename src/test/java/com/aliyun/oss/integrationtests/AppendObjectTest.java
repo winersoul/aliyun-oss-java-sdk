@@ -39,7 +39,10 @@ import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.OSSObject;
 
 public class AppendObjectTest extends TestBase {
-    
+    /**
+     * 新建文件并追加
+     * @throws Exception
+     */
     @Test
     public void testNormalAppendObject() throws Exception {        
         String key = "normal-append-object";
@@ -47,15 +50,20 @@ public class AppendObjectTest extends TestBase {
         
         for (int i = 0; i < 10; i++) {
             try {
-                // Usage style  1
-                InputStream instream = genFixedLengthInputStream(instreamLength);
+                // Usage style  1  new AppendObjectRequest(bucketName, key, File/InputStream [,ObjectMetadata])
+                InputStream instream = genFixedLengthInputStream(instreamLength); 
                 AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
+                //追加, 设置追加的开始位置：之前的长度，从0开始
                 appendObjectRequest.setPosition(2 * i * instreamLength);
                 AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
+                
                 OSSObject o = ossClient.getObject(bucketName, key);
                 Assert.assertEquals(key, o.getKey());
+                
                 Assert.assertEquals((2 * i + 1) * instreamLength, o.getObjectMetadata().getContentLength());
+                
                 Assert.assertEquals(APPENDABLE_OBJECT_TYPE, o.getObjectMetadata().getObjectType());
+                
                 if (appendObjectResult.getNextPosition() != null) {
                     Assert.assertEquals((2 * i + 1) * instreamLength, appendObjectResult.getNextPosition().longValue());
                 }
@@ -63,6 +71,7 @@ public class AppendObjectTest extends TestBase {
                 // Usage style 2
                 final String filePath = genFixedLengthFile(instreamLength);
                 appendObjectRequest = new AppendObjectRequest(bucketName, key, new File(filePath));
+                //追加, 设置追加的开始位置：之前的长度，从0开始
                 appendObjectRequest.setPosition(appendObjectResult.getNextPosition());
                 appendObjectResult = ossClient.appendObject(appendObjectRequest);
                 o = ossClient.getObject(bucketName, key);
@@ -76,24 +85,31 @@ public class AppendObjectTest extends TestBase {
             }
         }
     }
-    
+    /**
+     * 向已有文件追加
+     */
     @Test
     public void testAppendExistingNormalObject() throws Exception {        
         String key = "append-existing-normal-object";
         final long instreamLength = 128 * 1024;
         
         try {
+        	//普通文件上传
             InputStream instream = genFixedLengthInputStream(instreamLength);
             ossClient.putObject(bucketName, key, instream, null);
+            //获取到该文件
             OSSObject o = ossClient.getObject(bucketName, key);
             Assert.assertEquals(key, o.getKey());
+            //getObjectMetadata:object的元数据：长度，类型，各种请求头，md5摘要（etag），
             Assert.assertEquals(instreamLength, o.getObjectMetadata().getContentLength());
+            //对象内容，关闭流
             o.getObjectContent().close();
             
             try {
                 instream = genFixedLengthInputStream(instreamLength);
                 AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucketName, key, instream, null);
                 appendObjectRequest.setPosition(instreamLength);
+//                appendObjectRequest.setPosition(appendObjectRequest.getPosition());
                 ossClient.appendObject(appendObjectRequest);
             } catch (OSSException ex) {
                 Assert.assertEquals(OSSErrorCode.OBJECT_NOT_APPENDALBE, ex.getErrorCode());
@@ -103,7 +119,10 @@ public class AppendObjectTest extends TestBase {
             Assert.fail(ex.getMessage());
         }
     }
-    
+    /**
+     * 判断追加位置是否合法
+     * @throws Exception
+     */
     @Test
     public void testAppendObjectAtIllegalPosition() throws Exception {        
         String key = "append-object-at-illlegal-position";

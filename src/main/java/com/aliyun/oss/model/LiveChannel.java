@@ -22,7 +22,12 @@ package com.aliyun.oss.model;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * 用户可以使用RTMP协议将音视频数据上传到OSS，转储为指定格式的音视频文件。
+ * 上传前，用户首先需要创建一个LiveChannel，以获取对应的推流地址，更详细的信息请参考对应的API。
+ * @author Administrator
+ *
+ */
 public class LiveChannel {
     
     public LiveChannel() {}

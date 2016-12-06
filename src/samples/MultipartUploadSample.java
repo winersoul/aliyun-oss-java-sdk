@@ -31,8 +31,23 @@ import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 
 /**
+ * 分片上传
  * This sample demonstrates how to upload multiparts to Aliyun OSS 
  * using the OSS SDK for Java.
+ * 
+ * 对于大文件上传，可以切分成片上传。用户可以在如下的应用场景内（但不仅限于此），使用分片上传(Multipart Upload)模式：
+ * 
+	 * 需要支持断点上传。
+	 * 上传超过100MB大小的文件。
+	 * 网络条件较差，和OSS的服务器之间的链接经常断开。
+	 * 上传文件之前，无法确定上传文件的大小。
+ * 
+ * 分片上传(Multipart Upload)分为如下3个步骤:
+ * 
+	 * 初始化一个分片上传任务（InitiateMultipartUpload）
+	 * 逐个或并行上传分片（UploadPart）
+	 * 完成分片上传（CompleteMultipartUpload）或取消分片上传(AbortMultipartUpload)
+ * 
  */
 public class MultipartUploadSample {
     
@@ -42,11 +57,13 @@ public class MultipartUploadSample {
 
     private static OSSClient client = null;
     
-    private static String bucketName = "*** Provide bucket name ***";
-    private static String key = "*** Provide key ***";
-    private static String localFilePath = "*** Provide local file path ***";
-    
+    private static String bucketName = "multiplePatrs";
+    private static String key = "multiplePatrs.mp4";
+    private static String localFilePath = "testmultipartupload.zip";
+    //Executors创建线程池 
     private static ExecutorService executorService = Executors.newFixedThreadPool(5);
+    //PartETag:包含Multipart上传的Part的返回结果信息。
+    
     private static List<PartETag> partETags = Collections.synchronizedList(new ArrayList<PartETag>());
     
     public static void main(String[] args) throws IOException {
@@ -183,6 +200,7 @@ public class MultipartUploadSample {
                 
                 UploadPartResult uploadPartResult = client.uploadPart(uploadPartRequest);
                 System.out.println("Part#" + this.partNumber + " done\n");
+                // 必须有，保证线程安全
                 synchronized (partETags) {
                     partETags.add(uploadPartResult.getPartETag());
                 }
